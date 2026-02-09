@@ -334,7 +334,7 @@ class BlockMaker
         }
 
         return collect(
-            config('twill.block_editor.directories.source.icons')
+            config('twill.block_editor.directories.source.icons', [])
         )->reduce(function ($keep, $path) use ($icon) {
             if ($keep) {
                 return $keep;

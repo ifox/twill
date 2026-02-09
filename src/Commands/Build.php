@@ -245,7 +245,7 @@ class Build extends Command
             mkdir($targetDirectory);
         }
 
-        foreach (config('twill.block_editor.directories.source.icons') as $iconDirectory) {
+        foreach (config('twill.block_editor.directories.source.icons', []) as $iconDirectory) {
             // We do not want to process original icons.
             if ($iconDirectory !== $originalIcons) {
                 foreach (glob($iconDirectory . DIRECTORY_SEPARATOR . '*.svg') as $svg) {

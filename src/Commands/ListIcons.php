@@ -60,7 +60,7 @@ class ListIcons extends Command
     protected function getIconList()
     {
         return collect(
-            config('twill.block_editor.directories.source.icons')
+            config('twill.block_editor.directories.source.icons', [])
         )->reduce(function (Collection $keep, $path) {
             if (! $this->files->exists($path)) {
                 $this->error("Directory not found: $path");

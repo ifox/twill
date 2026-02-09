@@ -551,7 +551,7 @@ class Block
         }
 
         if (
-            $configBlock = collect(config('twill.block_editor.blocks'))->filter(
+            $configBlock = collect(config('twill.block_editor.blocks', []))->filter(
                 function ($block) use ($blockName) {
                     return Str::contains($block['component'], $blockName);
                 }
@@ -562,7 +562,7 @@ class Block
             }
         }
         if (
-            $configRepeater = collect(config('twill.block_editor.repeaters'))->filter(
+            $configRepeater = collect(config('twill.block_editor.repeaters', []))->filter(
                 function ($repeater) use ($blockName) {
                     return Str::contains($repeater['component'], $blockName);
                 }

@@ -25,7 +25,7 @@ class IconsController extends Controller
     public function index()
     {
         $icons = collect(
-            config('twill.block_editor.directories.source.icons')
+            config('twill.block_editor.directories.source.icons', [])
         )->reduce(function (Collection $keep, $path) {
             if (! $this->files->exists($path)) {
                 return $keep;
