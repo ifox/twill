@@ -173,9 +173,9 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
 
         $filename = sanitizeFilename($originalFilename);
 
-        $fileDirectory = $request->input('unique_folder_name');
+        $fileDirectory = basename($request->input('unique_folder_name'));
 
-        $uuid = $request->input('unique_folder_name') . '/' . $filename;
+        $uuid = $fileDirectory . '/' . $filename;
 
         if ($this->config->get('twill.media_library.prefix_uuid_with_local_path', false)) {
             $prefix = trim($this->config->get('twill.media_library.local_path'), '/ ') . '/';

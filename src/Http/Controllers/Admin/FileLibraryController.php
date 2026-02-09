@@ -199,11 +199,11 @@ class FileLibraryController extends ModuleController implements SignUploadListen
     {
         $filename = $request->input('qqfilename');
 
-        $cleanFilename = preg_replace("/\s+/i", '-', $filename);
+        $cleanFilename = basename(preg_replace("/\s+/i", '-', $filename));
 
-        $fileDirectory = $request->input('unique_folder_name');
+        $fileDirectory = basename($request->input('unique_folder_name'));
 
-        $uuid = $request->input('unique_folder_name') . '/' . $cleanFilename;
+        $uuid = $fileDirectory . '/' . $cleanFilename;
 
         if ($this->config->get('twill.file_library.prefix_uuid_with_local_path', false)) {
             $prefix = trim($this->config->get('twill.file_library.local_path'), '/ ') . '/';
