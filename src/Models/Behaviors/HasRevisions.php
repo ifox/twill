@@ -5,6 +5,7 @@ namespace A17\Twill\Models\Behaviors;
 use A17\Twill\Facades\TwillCapsules;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
 
 trait HasRevisions
 {
@@ -13,7 +14,7 @@ trait HasRevisions
      */
     public function revisions(): HasMany
     {
-        return $this->hasMany($this->getRevisionModel())->orderBy('created_at', 'desc');
+        return $this->hasMany($this->getRevisionModel())->orderBy('id', 'desc');
     }
 
     /**
@@ -33,9 +34,15 @@ trait HasRevisions
     {
         $currentRevision = null;
 
-        return $this->revisions
-            ->map(function ($revision, $index) use (&$currentRevision) {
-                if (! $currentRevision && ! $revision->isDraft()) {
+        $foreignKey = $this->revisions()->getForeignKeyName();
+
+        $revisions = $this->revisions()
+            ->select([$foreignKey, 'id', 'user_id', 'created_at', DB::raw("payload LIKE '%\"cmsSaveType\":\"draft-revision%' as is_draft")])
+            ->get();
+
+        return $revisions
+            ->map(function ($revision) use (&$currentRevision) {
+                if (! $currentRevision && ! $revision->is_draft) {
                     $currentRevision = $revision;
                 }
 
