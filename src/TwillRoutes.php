@@ -190,16 +190,12 @@ class TwillRoutes
         if ($resource) {
             Route::group(
                 ['as' => $resourceCustomGroupPrefix],
-                function () use ($slug, $className, $resource_options, $customRoutePrefix) {
-                    $route = Route::resource(
+                function () use ($slug, $className, $resource_options) {
+                    Route::resource(
                         $slug,
                         "{$className}Controller",
                         $resource_options
                     );
-                    $route->action['twill'] = [
-                        'customRoutePrefix' => $customRoutePrefix,
-                        'slug' => $slug,
-                    ];
                 }
             );
         }
