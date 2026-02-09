@@ -58,6 +58,10 @@ class TwillAppSettings
 
         $block = $this->getGroupDataForSectionAndName($group, $section);
 
+        if (! $block) {
+            return null;
+        }
+
         return $block->translatedInput($key);
     }
 
@@ -66,6 +70,10 @@ class TwillAppSettings
         [$group, $section, $key] = $this->getGroupSectionAndKeyFromIdentifier($identifier);
 
         $block = $this->getGroupDataForSectionAndName($group, $section);
+
+        if (! $block) {
+            return null;
+        }
 
         if ($block->getRelated($key)->isNotEmpty()) {
             return $block->getRelated($key);
@@ -101,14 +109,14 @@ class TwillAppSettings
         return $group;
     }
 
-    public function getGroupDataForSectionAndName(string $group, string $section): Block
+    public function getGroupDataForSectionAndName(string $group, string $section): ?Block
     {
         $groupObject = $this->getGroupForGroupAndSectionName($group, $section);
 
         return $groupObject->getSettingsModel()->blocks
             ->where('editor_name', $section)
             ->where('parent_id', null)
-            ->firstOrFail();
+            ->first();
     }
 
     public function getBlockServiceForGroupAndSection(string $group, string $section): BlockService
