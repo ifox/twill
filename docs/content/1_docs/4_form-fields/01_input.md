@@ -84,7 +84,7 @@ Input::make()
 | rows        | Sets the number of rows in a textarea                                                                                    | integer                                                     | 5             |
 | required    | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | boolean                                                     | false         |
 | disabled    | Disables the field                                                                                                       | boolean                                                     | false         |
-| readonly    | Sets the field as readonly                                                                                               | boolean                                                     | false         |
+| read-only   | Sets the field as read-only (use `readonly` in directive syntax)                                                         | boolean                                                     | false         |
 | default     | Sets a default value if empty                                                                                            | string                                                      |               |
 | mask        | Set a mask using the alpinejs mask plugin                                                                                | string                                                      |               |
 | direction   | Set custom input direction <small>(from `v3.1.0`)</small>                                                                | ltr<br/>rtl<br>auto                                                        | auto          |
