@@ -41,11 +41,16 @@ class AuthServiceProvider extends ServiceProvider
 
     protected function define($ability, $callback)
     {
-        collect($ability)
-            ->concat(static::ABILITY_ALIASES[$ability] ?? [])
-            ->each(function ($alias) use ($callback) {
-                Gate::define($alias, $callback);
+        Gate::define($ability, $callback);
+
+        // Alias gates delegate to the parent gate so that overriding the
+        // parent (e.g. 'list') automatically propagates to all aliases
+        // (e.g. 'access-module-list', 'access-media-library').
+        foreach (static::ABILITY_ALIASES[$ability] ?? [] as $alias) {
+            Gate::define($alias, function ($user, ...$args) use ($ability) {
+                return Gate::forUser($user)->check($ability, $args);
             });
+        }
     }
 
     protected function authorize($user, $callback)
