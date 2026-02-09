@@ -306,7 +306,10 @@ class LoginController extends Controller
      */
     protected function credentials(Request $request): array
     {
-        return array_merge($request->only($this->username(), 'password'), ['published' => 1]);
+        $credentials = $request->only($this->username(), 'password');
+        $credentials[$this->username()] = mb_strtolower($credentials[$this->username()]);
+
+        return array_merge($credentials, ['published' => 1]);
     }
 
     protected function autologin(): bool

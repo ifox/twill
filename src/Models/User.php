@@ -58,6 +58,11 @@ class User extends AuthenticatableContract implements TwillModelContract
         'language',
     ];
 
+    public function setEmailAttribute(string $value): void
+    {
+        $this->attributes['email'] = mb_strtolower($value);
+    }
+
     protected $hidden = ['password', 'remember_token', 'google_2fa_secret'];
 
     public $checkboxes = ['published'];
