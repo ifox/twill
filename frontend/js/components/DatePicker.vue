@@ -132,7 +132,7 @@
           wrap: true,
           altInput: true,
           altFormat: self.altFormatComputed,
-          dateFormat: (self.enableTime && self.noCalendar) ? 'H:i:S' : (self.enableTime ? 'Z' : 'Y-m-d'), // This is the universal format that will be parsed by the back-end.
+          dateFormat: (self.enableTime && self.noCalendar) ? 'H:i:S' : (self.enableTime ? 'Y-m-d H:i:S' : 'Y-m-d'), // This is the universal format that will be parsed by the back-end.
           static: self.staticMode,
           appendTo: self.staticMode ? self.$refs[self.refs.flatPicker] : undefined,
           enableTime: self.enableTime,
@@ -149,15 +149,15 @@
           parseDate: function (date, format) {
             const fullFormat = 'yyyy-MM-dd HH:mm:ss';
             if (date.length === fullFormat.length) {
-              return parse(date + 'Z', fullFormat + 'X', Date.UTC());
+              return parse(date);
             }
             const fullFormatNoSeconds = 'yyyy-MM-dd HH:mm';
             if (date.length === fullFormatNoSeconds.length) {
-              return parse(date + 'Z', fullFormat + 'X', Date.UTC());
+              return parse(date);
             }
             const fullFormatNoTime = 'yyyy-MM-dd';
             if (date.length === fullFormatNoTime.length) {
-              return parse(date, fullFormatNoTime, Date.UTC());
+              return parse(date);
             }
 
             if (self.isValidTime(date)) {
