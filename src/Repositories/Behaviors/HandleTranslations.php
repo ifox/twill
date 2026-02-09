@@ -63,13 +63,24 @@ trait HandleTranslations
 
     public function getFormFieldsHandleTranslations(TwillModelContract $object, array $fields): array
     {
-        // Keep a copy of the slugs to add it again after.
+        // Preserve translations set by other traits (e.g. HandleMetadata) that may have
+        // run before HandleTranslations, so trait ordering does not matter.
+        $translatedAttributes = $object->getTranslatedAttributes() ?? [];
+        $preservedTranslations = [];
+        if (isset($fields['translations'])) {
+            foreach ($fields['translations'] as $key => $value) {
+                if ($key !== 'slug' && !in_array($key, $translatedAttributes)) {
+                    $preservedTranslations[$key] = $value;
+                }
+            }
+        }
+
         $slug = $fields['translations']['slug'] ?? null;
         unset($fields['translations']);
 
-        if ($object->translations !== null && $object->getTranslatedAttributes() != null) {
+        if ($object->translations !== null && $translatedAttributes != null) {
             foreach ($object->translations as $translation) {
-                foreach ($object->getTranslatedAttributes() as $attribute) {
+                foreach ($translatedAttributes as $attribute) {
                     unset($fields[$attribute]);
                     if (array_key_exists($attribute, $this->fieldsGroups) && is_array($translation->{$attribute})) {
                         foreach ($this->fieldsGroups[$attribute] as $field_name) {
@@ -92,6 +103,11 @@ trait HandleTranslations
 
         if ($slug) {
             $fields['translations']['slug'] = $slug;
+        }
+
+        // Restore translations from other traits
+        foreach ($preservedTranslations as $key => $value) {
+            $fields['translations'][$key] = $value;
         }
 
         return $fields;
