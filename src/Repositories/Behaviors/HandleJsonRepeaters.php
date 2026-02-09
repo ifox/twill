@@ -17,8 +17,8 @@ use Illuminate\Support\Arr;
  * Names must be the same as the ones you added in your `repeaters` attribute on `config\twill.php`
  * or the actual filename for self-contained repeaters introduced in 2.1.
  *
- * Supported: Input, WYSIWYG, textarea, browsers.
- * Not supported: Medias, Files, repeaters.
+ * Supported: Input, WYSIWYG, textarea, browsers, medias.
+ * Not supported: Files, repeaters.
  */
 trait HandleJsonRepeaters
 {
@@ -70,14 +70,14 @@ trait HandleJsonRepeaters
     {
         foreach ($this->getJsonRepeaters() as $repeater) {
             if (isset($fields[$repeater]) && ! empty($fields[$repeater])) {
-                $fields = $this->getJsonRepeater($fields, $repeater, $fields[$repeater]);
+                $fields = $this->getJsonRepeater($fields, $repeater, $fields[$repeater], $object);
             }
         }
 
         return $fields;
     }
 
-    public function getJsonRepeater(array $fields, string $repeaterName, array $serializedData): array
+    public function getJsonRepeater(array $fields, string $repeaterName, array $serializedData, $object = null): array
     {
         $repeatersFields = [];
         $repeatersBrowsers = [];
@@ -130,6 +130,32 @@ trait HandleJsonRepeaters
                     $key = getJsonRepeaterMediaRole($mediaKey, $repeaterName, $index);
                     if (isset($fields['medias'][$key])) {
                         $repeatersMedias["blocks[$id][$mediaKey]"] = $fields['medias'][$key];
+                    } elseif ($object !== null && $object->has('medias')) {
+                        // Query medias directly from the model when $fields['medias']
+                        // hasn't been populated yet (HandleMedias trait ordering).
+                        $mediasByRole = $object->medias->where('pivot.role', $key);
+                        if ($mediasByRole->isNotEmpty()) {
+                            $items = [];
+                            foreach ($mediasByRole->groupBy('id') as $mediasById) {
+                                $item = $mediasById->first();
+                                $itemForForm = $item->toCmsArray();
+                                $itemForForm['pivot_id'] = $item->pivot->id;
+                                $itemForForm['metadatas']['custom'] = json_decode($item->pivot->metadatas, true);
+                                foreach ($mediasById->groupBy('pivot.crop') as $crop => $mediaByCrop) {
+                                    $media = $mediaByCrop->first();
+                                    $itemForForm['crops'][$crop] = [
+                                        'pivot_id' => $media->pivot->id,
+                                        'name' => $media->pivot->ratio,
+                                        'width' => $media->pivot->crop_w,
+                                        'height' => $media->pivot->crop_h,
+                                        'x' => $media->pivot->crop_x,
+                                        'y' => $media->pivot->crop_y,
+                                    ];
+                                }
+                                $items[] = $itemForForm;
+                            }
+                            $repeatersMedias["blocks[$id][$mediaKey]"] = $items;
+                        }
                     }
                 }
             }
