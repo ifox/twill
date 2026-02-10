@@ -114,6 +114,12 @@
             <wysiwyg-menu-bar-btn icon="table"
                                   v-if="toolbar.table"
                                   @btn:click="editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()"/>
+
+            <wysiwyg-menu-bar-btn icon="remove"
+                                  label="clear formatting"
+                                  v-if="toolbar.clean"
+                                  @btn:click="editor.chain().focus().clearNodes().unsetAllMarks().run()"/>
+
             <wysiwyg-menu-bar-btn icon="undo"
                                   :disabled="!editor.can().undo()"
                                   @btn:click="editor.chain().focus().undo().run()"/>
