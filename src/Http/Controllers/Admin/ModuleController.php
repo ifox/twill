@@ -2275,6 +2275,17 @@ abstract class ModuleController extends Controller
 
         $itemId = $this->getItemIdentifier($item);
 
+        // For nested modules with translated slugs, build locale-aware ancestor paths
+        if (empty($localizedPermalinkBase) && $item && $itemId && method_exists($item, 'getAncestorsSlug')) {
+            $ancestors = $item->getAncestors();
+            if ($ancestors->isNotEmpty()) {
+                foreach (getLocales() as $locale) {
+                    $ancestorsSlug = $item->getAncestorsSlug($locale);
+                    $localizedPermalinkBase[$locale] = $baseUrl . ($ancestorsSlug ? $ancestorsSlug . '/' : '');
+                }
+            }
+        }
+
         $data = [
                 'item' => $item,
                 'moduleName' => $this->moduleName,
