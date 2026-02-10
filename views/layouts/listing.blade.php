@@ -160,6 +160,12 @@
                     @partialView(($moduleName ?? null), 'create', ['renderForModal' => true])
                 @endif
             </a17-modal-create>
+            <a17-modal class="modal--browser" ref="browser" mode="medium" :force-close="true">
+                <a17-browser></a17-browser>
+            </a17-modal>
+            <a17-modal class="modal--browser" ref="browserWide" mode="wide" :force-close="true">
+                <a17-browser></a17-browser>
+            </a17-modal>
         @endif
 
         <a17-dialog ref="warningDeleteRow" modal-title="{{ twillTrans('twill::lang.listing.dialogs.delete.title') }}"

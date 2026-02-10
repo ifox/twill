@@ -25,12 +25,16 @@ import a17BulkEdit from '@/components/table/BulkEdit.vue'
 import a17LangManager from '@/components/LangManager.vue'
 import ModalCreate from '@/components/modals/ModalCreate.vue'
 
+// Browser (needed for browser fields in create modal)
+import a17Browser from '@/components/Browser.vue'
+
 // Store modules
 import datatable from '@/store/modules/datatable'
 import language from '@/store/modules/language'
 import form from '@/store/modules/form'
 import modalEdition from '@/store/modules/modal-edition'
 import attributes from '@/store/modules/attributes'
+import browser from '@/store/modules/browser'
 
 // LocalStorage
 import { getStorage } from '@/utils/localeStorage.js'
@@ -47,8 +51,12 @@ store.registerModule('language', language)
 store.registerModule('form', form)
 store.registerModule('modalEdition', modalEdition)
 store.registerModule('attributes', attributes)
+store.registerModule('browser', browser)
 
 registerCustomComponents()
+
+// Browser component (needed for browser fields in create modal)
+Vue.component('a17-browser', a17Browser)
 
 /* eslint-disable no-new */
 /* eslint no-unused-vars: "off" */
