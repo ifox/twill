@@ -5,7 +5,7 @@ import isEmpty from 'lodash/isEmpty'
 * if a block is passed as second argument, we retrieve selected items namespaced by the block id
 * and strip it out from the key to clean things up and make it easier for the backend
 */
-const gatherSelected = (selected, block = null) => {
+export const gatherSelected = (selected, block = null) => {
   return Object.assign({}, ...Object.keys(selected).map(key => {
     if (block) {
       if (isBlockField(key, block.id)) {
