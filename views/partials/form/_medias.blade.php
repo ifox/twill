@@ -2,12 +2,12 @@
     <a17-locale
         type="a17-mediafield-translated"
         :attributes="{
-            label: '{{ $label }}',
+            label: {!! json_encode($label) !!},
             cropContext: '{{ !$renderForBlocks ? $name : 'block_' . $name }}',
             max: {{ $max }},
             widthMin: {{ $widthMin }},
             heightMin: {{ $heightMin }},
-            note: '{{ $fieldNote }}',
+            note: {!! json_encode($fieldNote) !!},
             @if($renderForBlocks) fixedErrorKey: $parent.blockFieldName !== undefined ? $parent.blockFieldName('{{$name}}') : '', @endif
             @if ($disabled) disabled: true, @endif
             @if ($extraMetadatas) extraMetadatas: {{ json_encode($extraMetadatas) }}, @endif

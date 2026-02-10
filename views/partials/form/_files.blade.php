@@ -1,10 +1,10 @@
 <a17-locale
     type="a17-filefield"
     :attributes="{
-        label: '{{ $label }}',
-        itemLabel: '{{ $itemLabel }}',
-        note: '{{ $note }}',
-        fieldNote: '{{ $fieldNote }}',
+        label: {!! json_encode($label) !!},
+        itemLabel: {!! json_encode($itemLabel) !!},
+        note: {!! json_encode($note) !!},
+        fieldNote: {!! json_encode($fieldNote) !!},
         max: {{ $max }},
         filesizeMax: {{ $filesizeMax }},
         @if ($buttonOnTop) buttonOnTop: true, @endif

@@ -9,12 +9,12 @@
         <a17-locale
             type="a17-wysiwyg-tiptap"
             :attributes="{
-            label: '{{ $label }}',
+            label: {!! json_encode($label) !!},
             {!! $formFieldName(true) !!},
-            @if ($note) note: '{{ $note }}', @endif
+            @if ($note) note: {!! json_encode($note) !!}, @endif
             @if ($required) required: true, @endif
             @if ($options) options: {!! e(json_encode($options)) !!}, @endif
-            @if ($placeholder) placeholder: '{{ addslashes($placeholder) }}', @endif
+            @if ($placeholder) placeholder: {!! json_encode($placeholder) !!}, @endif
             @if ($direction) direction: '{{ $direction }}', @endif
             @if ($maxlength) maxlength: {{ $maxlength }}, @endif
             @if ($hideCounter) showCounter: false, @endif
@@ -62,12 +62,12 @@
         <a17-locale
             type="a17-wysiwyg"
             :attributes="{
-            label: '{{ $label }}',
+            label: {!! json_encode($label) !!},
             {!! $formFieldName(true) !!},
-            @if ($note) note: '{{ $note }}', @endif
+            @if ($note) note: {!! json_encode($note) !!}, @endif
             @if ($required) required: true, @endif
             @if ($options) options: {!! e(json_encode($options)) !!}, @endif
-            @if ($placeholder) placeholder: '{{ addslashes($placeholder) }}', @endif
+            @if ($placeholder) placeholder: {!! json_encode($placeholder) !!}, @endif
             @if ($direction) direction: '{{ $direction }}', @endif
             @if ($maxlength) maxlength: {{ $maxlength }}, @endif
             @if ($hideCounter) showCounter: false, @endif
