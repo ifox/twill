@@ -7,7 +7,7 @@
 import cloneDeep from 'lodash/cloneDeep'
 
 import ACTIONS from '@/store/actions'
-import { getFormData, getFormFields, getModalFormFields } from '@/utils/getFormData.js'
+import { getFormData, getFormFields, getModalFormFields, gatherSelected } from '@/utils/getFormData.js'
 
 import api from '../api/form'
 import { ATTRIBUTES, FORM, LANGUAGE, NOTIFICATION, PUBLICATION, REVISION } from '../mutations'
@@ -265,7 +265,9 @@ const actions = {
       commit(NOTIFICATION.CLEAR_NOTIF, 'error')
 
       const data = Object.assign(getFormFields(rootState), {
-        languages: rootState.language.all
+        languages: rootState.language.all,
+        browsers: rootState.browser ? gatherSelected(rootState.browser.selected) : {},
+        medias: rootState.mediaLibrary ? gatherSelected(rootState.mediaLibrary.selected) : {}
       })
 
       api[options.method](options.endpoint, data, function (successResponse) {
