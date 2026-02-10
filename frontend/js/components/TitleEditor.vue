@@ -142,7 +142,13 @@
       },
       customlink: function () {
         const localizedCustomPermalink = this.localizedCustomPermalink.length > 0 ? JSON.parse(this.localizedCustomPermalink) : {}
-        return Object.keys(localizedCustomPermalink).length > 0 ? localizedCustomPermalink[this.currentLocale.value] : (this.customPermalink ? this.customPermalink : false)
+        let link = Object.keys(localizedCustomPermalink).length > 0 ? localizedCustomPermalink[this.currentLocale.value] : (this.customPermalink ? this.customPermalink : false)
+        if (link && typeof link === 'string') {
+          const slugField = this.fieldValueByName('slug')
+          const currentSlug = slugField ? (typeof slugField === 'string' ? slugField : slugField[this.currentLocale.value]) : ''
+          link = link.replace('{slug}', currentSlug || '')
+        }
+        return link
       },
       permalink: function () {
         const localizedPermalinkbase = this.localizedPermalinkbase.length > 0 ? JSON.parse(this.localizedPermalinkbase) : {}
