@@ -350,7 +350,7 @@ class UserController extends ModuleController
             })->toArray();
         }
 
-        return collect(TwillPermissions::roles()::toArray())->map(function ($item, $key) {
+        return collect(TwillPermissions::roleValues())->map(function ($item, $key) {
             return ['value' => $key, 'label' => $item];
         })->values()->toArray();
     }

@@ -1339,7 +1339,7 @@ abstract class ModuleController extends Controller
         if ($this->moduleHas('revisions')) {
             return Response::json([
                 'message' => twillTrans('twill::lang.publisher.save-success'),
-                'variant' => FlashLevel::SUCCESS,
+                'variant' => FlashLevel::SUCCESS->value,
                 'revisions' => $item->refresh()->revisionsArray(),
             ]);
         }
@@ -1528,7 +1528,7 @@ abstract class ModuleController extends Controller
 
             return Response::json([
                 'message' => twillTrans('twill::lang.listing.duplicate.success', ['modelTitle' => $this->modelTitle]),
-                'variant' => FlashLevel::SUCCESS,
+                'variant' => FlashLevel::SUCCESS->value,
                 'redirect' => moduleRoute(
                     $this->moduleName,
                     $this->routePrefix,
@@ -2671,7 +2671,7 @@ abstract class ModuleController extends Controller
      */
     protected function respondWithSuccess($message)
     {
-        return $this->respondWithJson($message, FlashLevel::SUCCESS);
+        return $this->respondWithJson($message, FlashLevel::SUCCESS->value);
     }
 
     /**
@@ -2691,7 +2691,7 @@ abstract class ModuleController extends Controller
      */
     protected function respondWithError($message)
     {
-        return $this->respondWithJson($message, FlashLevel::ERROR);
+        return $this->respondWithJson($message, FlashLevel::ERROR->value);
     }
 
     /**

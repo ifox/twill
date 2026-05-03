@@ -2,22 +2,14 @@
 
 namespace A17\Twill\Models\Enums;
 
-use MyCLabs\Enum\Enum;
-
-class UserRole extends Enum
+enum UserRole: string
 {
-    /**
-     * @var string
-     */
-    public const VIEWONLY = 'View only';
+    case VIEWONLY = 'View only';
+    case PUBLISHER = 'Publisher';
+    case ADMIN = 'Admin';
 
-    /**
-     * @var string
-     */
-    public const PUBLISHER = 'Publisher';
-
-    /**
-     * @var string
-     */
-    public const ADMIN = 'Admin';
+    public static function toArray(): array
+    {
+        return collect(self::cases())->mapWithKeys(fn (self $role) => [$role->name => $role->value])->all();
+    }
 }

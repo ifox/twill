@@ -2,10 +2,14 @@
 
 namespace A17\Twill\Models;
 
-use Cartalyst\Tags\IlluminateTagged;
+use Illuminate\Database\Eloquent\Model;
 
-class Tagged extends IlluminateTagged
+class Tagged extends Model
 {
+    protected $guarded = [];
+
+    public $timestamps = false;
+
     public function getTable()
     {
         return config('twill.tagged_table', 'tagged');

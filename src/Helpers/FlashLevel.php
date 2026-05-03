@@ -2,15 +2,10 @@
 
 namespace A17\Twill\Helpers;
 
-use MyCLabs\Enum\Enum;
-
-class FlashLevel extends Enum
+enum FlashLevel: string
 {
-    public const SUCCESS = 'success';
-
-    public const ERROR = 'error';
-
-    public const WARNING = 'caution';
-
-    public const INFO = 'help';
+    case SUCCESS = 'success';
+    case ERROR = 'error';
+    case WARNING = 'caution';
+    case INFO = 'help';
 }

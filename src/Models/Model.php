@@ -9,8 +9,6 @@ use A17\Twill\Models\Contracts\TwillLinkableModel;
 use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Contracts\TwillSchedulableModel;
 use Carbon\Carbon;
-use Cartalyst\Tags\TaggableInterface;
-use Cartalyst\Tags\TaggableTrait;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model as BaseModel;

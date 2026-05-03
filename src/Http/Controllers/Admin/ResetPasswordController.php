@@ -2,10 +2,10 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
+use A17\Twill\Http\Controllers\Admin\Auth\ResetsPasswords;
 use A17\Twill\Facades\TwillRoutes;
 use Carbon\Carbon;
 use Illuminate\Config\Repository as Config;
-use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;

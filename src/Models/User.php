@@ -125,7 +125,7 @@ class User extends AuthenticatableContract implements TwillModelContract
         }
 
         if (! empty($this->role)) {
-            return TwillPermissions::roles()::{$this->role}()->getValue();
+            return TwillPermissions::roleValue($this->role);
         }
 
         return null;

@@ -5,8 +5,8 @@ namespace A17\Twill\Commands;
 use A17\Twill\Exceptions\NoCapsuleFoundException;
 use A17\Twill\Facades\TwillCapsules;
 use Exception;
-use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 class CapsuleInstall extends Command
@@ -305,12 +305,8 @@ class CapsuleInstall extends Command
 
     protected function repositoryExists(): bool
     {
-        $guzzle = new Client();
-
         try {
-            $statusCode = $guzzle
-                ->request('GET', $this->repositoryUrl)
-                ->getStatusCode();
+            $statusCode = Http::withoutRedirecting()->get($this->repositoryUrl)->status();
         } catch (Exception $exception) {
             $statusCode = $exception->getCode();
         }

@@ -6,11 +6,14 @@ use A17\Twill\Enums\PermissionLevel;
 use A17\Twill\Models\Enums\UserRole;
 use A17\Twill\Models\Permission;
 use A17\Twill\View\Components\Navigation\NavigationLink;
+use BackedEnum;
 use Illuminate\Support\Facades\Auth;
-use MyCLabs\Enum\Enum;
 
 class TwillPermissions
 {
+    /**
+     * @var class-string<BackedEnum>
+     */
     public string $roleEnum = UserRole::class;
 
     public function enabled(): bool
@@ -18,21 +21,29 @@ class TwillPermissions
         return config('twill.enabled.permissions-management');
     }
 
-    /**
-     * @return Enum
-     */
     public function roles(): string
     {
         return $this->roleEnum;
     }
 
     /**
-     * The role enumeration class. Must extend MyCLabs\Enum\Enum.
-     * See A17\Twill\Models\Enums\UserRole for an example.
+     * The role enumeration class. Must be a backed enum.
      */
     public function setRoleEnum(string $roleEnum): void
     {
         $this->roleEnum = $roleEnum;
+    }
+
+    public function roleValues(): array
+    {
+        return collect(($this->roles())::cases())->mapWithKeys(
+            fn (BackedEnum $role) => [$role->name => $role->value]
+        )->all();
+    }
+
+    public function roleValue(string $role): ?string
+    {
+        return $this->roleValues()[$role] ?? null;
     }
 
     /**

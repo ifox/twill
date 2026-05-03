@@ -3,7 +3,16 @@
 namespace A17\Twill\Tests\Integration;
 
 use A17\Twill\Facades\TwillPermissions;
-use MyCLabs\Enum\Enum;
+
+enum CustomUserRole: string
+{
+    case CUSTOMONLY = 'Custom only';
+
+    public static function toArray(): array
+    {
+        return ['CUSTOMONLY' => self::CUSTOMONLY->value];
+    }
+}
 
 class SwappableRolesTest extends PermissionsTestBase
 {
@@ -11,20 +20,17 @@ class SwappableRolesTest extends PermissionsTestBase
     {
         $this->assertEquals(
             ['VIEWONLY' => 'View only', 'PUBLISHER' => 'Publisher', 'ADMIN' => 'Admin'],
-            TwillPermissions::roles()::toArray()
+            TwillPermissions::roleValues()
         );
     }
 
-    public function testCustomRoles(): void {
-        $rolesEnum = new class('Custom only') extends Enum {
-            public const CUSTOMONLY = 'Custom only';
-        };
+    public function testCustomRoles(): void
+    {
+        TwillPermissions::setRoleEnum(CustomUserRole::class);
 
-        TwillPermissions::setRoleEnum($rolesEnum::class);
-        
         $this->assertEquals(
             ['CUSTOMONLY' => 'Custom only'],
-            TwillPermissions::roles()::toArray()
+            TwillPermissions::roleValues()
         );
     }
 }

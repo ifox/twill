@@ -2,8 +2,8 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
+use A17\Twill\Http\Controllers\Admin\Auth\SendsPasswordResetEmails;
 use Illuminate\Auth\Passwords\PasswordBrokerManager;
-use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\View\Factory as ViewFactory;
 
 class ForgotPasswordController extends Controller

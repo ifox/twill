@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
+use A17\Twill\Http\Controllers\Admin\Auth\AuthenticatesUsers;
 use A17\Twill\Facades\TwillRoutes;
 use A17\Twill\Http\Requests\Admin\OauthRequest;
 use A17\Twill\Repositories\UserRepository;
@@ -9,7 +10,6 @@ use Carbon\Carbon;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Encryption\Encrypter;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
@@ -201,6 +201,8 @@ class LoginController extends Controller
      */
     public function redirectToProvider($provider, OauthRequest $request)
     {
+        abort_unless(class_exists(Socialite::class), 500, 'Install laravel/socialite to use Twill OAuth login.');
+
         return Socialite::driver($provider)
             ->scopes($this->config->get('twill.oauth.' . $provider . '.scopes', []))
             ->with($this->config->get('twill.oauth.' . $provider . '.with', []))
@@ -213,6 +215,8 @@ class LoginController extends Controller
      */
     public function handleProviderCallback($provider, OauthRequest $request)
     {
+        abort_unless(class_exists(Socialite::class), 500, 'Install laravel/socialite to use Twill OAuth login.');
+
         $oauthUser = Socialite::driver($provider)->user();
         $repository = App::make(UserRepository::class);
 

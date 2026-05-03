@@ -18,10 +18,6 @@ use Illuminate\Support\Str;
 use Illuminate\View\Factory as ViewFactory;
 use Psr\Log\LoggerInterface as Logger;
 use Spatie\Activitylog\Models\Activity;
-use Spatie\Analytics\Analytics;
-use Spatie\Analytics\Exceptions\InvalidConfiguration;
-use Spatie\Analytics\Period;
-
 class DashboardController extends Controller
 {
     /**
@@ -107,7 +103,7 @@ class DashboardController extends Controller
                 ],
             ],
             'shortcuts' => $this->getShortcuts($modules),
-            'facts' => $this->config->get('twill.dashboard.analytics.enabled', false) ? $this->getFacts() : null,
+            'facts' => $this->analyticsAvailable() ? $this->getFacts() : null,
             'drafts' => $this->getDrafts($modules),
         ]);
     }
@@ -311,21 +307,25 @@ class DashboardController extends Controller
      */
     private function getFacts()
     {
+        if (! $this->analyticsAvailable()) {
+            return collect();
+        }
+
         // TODO: cleanup when dropping support for Laravel 9
         $useV5API = true;
         if (class_exists('Spatie\Analytics\Facades\Analytics')) {
             /** @var Analytics $analytics */
-            $analytics = app()->makeWith(Analytics::class, ['propertyId' => config('analytics.property_id')]);
+            $analytics = app()->makeWith(\Spatie\Analytics\Analytics::class, ['propertyId' => config('analytics.property_id')]);
         } else {
             /** @var Analytics $analytics */
-            $analytics = app(Analytics::class);
+            $analytics = app(\Spatie\Analytics\Analytics::class);
             $useV5API = false;
         }
 
         try {
             if ($useV5API) {
                 $response = $analytics->get(
-                    Period::days(60),
+                    \Spatie\Analytics\Period::days(60),
                     ['totalUsers', 'screenPageViews', 'bounceRate', 'screenPageViewsPerSession'],
                     ['date']
                 );
@@ -341,7 +341,7 @@ class DashboardController extends Controller
                 })->reverse()->values();
             } else {
                 $response = $analytics->performQuery(
-                    Period::days(60),
+                    \Spatie\Analytics\Period::days(60),
                     'ga:users,ga:pageviews,ga:bouncerate,ga:pageviewsPerSession',
                     ['dimensions' => 'ga:date']
                 );
@@ -356,7 +356,7 @@ class DashboardController extends Controller
                     ];
                 });
             }
-        } catch (InvalidConfiguration $exception) {
+        } catch (\Spatie\Analytics\Exceptions\InvalidConfiguration $exception) {
             $this->logger->error($exception);
 
             return [];
@@ -476,7 +476,9 @@ class DashboardController extends Controller
                     return $stat['pageViews'];
                 }),
             ];
-        } elseif ($period === 'month') {
+        }
+
+        if ($period === 'month') {
             $first30stats = $statsByDate->take(30)->all();
 
             $stats = [
@@ -505,6 +507,12 @@ class DashboardController extends Controller
         }
 
         return [];
+    }
+
+    private function analyticsAvailable(): bool
+    {
+        return $this->config->get('twill.dashboard.analytics.enabled', false)
+            && class_exists(\Spatie\Analytics\Analytics::class);
     }
 
     /**

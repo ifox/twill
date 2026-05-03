@@ -2,11 +2,19 @@
 
 namespace A17\Twill\Models;
 
-use Cartalyst\Tags\IlluminateTag;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Tag extends IlluminateTag
+class Tag extends Model
 {
-    protected static $taggedModel = Tagged::class;
+    protected $guarded = [];
+
+    public $timestamps = false;
+
+    public function tagged(): HasMany
+    {
+        return $this->hasMany(Tagged::class);
+    }
 
     public function getTable()
     {
