@@ -34,7 +34,7 @@ The [Laravel documentation](https://laravel.com/docs/10.x) is far more extensive
 Lets require Twill:
 
 ```
-composer require area17/twill:"^3.2"
+composer require area17/twill:"^4.0"
 ```
 
 And then, install this example:

@@ -45,6 +45,28 @@ return [
 
 This is true to all following configuration arrays.
 
+## Optional feature dependencies
+
+Install optional packages only when you enable the related feature set:
+
+| Feature | Package | When to install | Extra setup |
+| --- | --- | --- | --- |
+| Dashboard analytics | `spatie/laravel-analytics` | When `twill.enabled.dashboard` is enabled and analytics are configured | Add Google Analytics credentials and `analytics.property_id` |
+| OAuth login | `laravel/socialite` | When `twill.enabled.users-oauth` is enabled | Configure `config/services.php` provider keys |
+| Imgix rendering | `imgix/imgix-php` | When `MEDIA_LIBRARY_IMAGE_SERVICE=A17\\Twill\\Services\\MediaLibrary\\Imgix` | Set `IMGIX_SOURCE_HOST` and optional signed URL settings |
+| S3 file/media storage | `league/flysystem-aws-s3-v3` | When `MEDIA_LIBRARY_ENDPOINT_TYPE` or `FILE_LIBRARY_ENDPOINT_TYPE` is `s3` | Set `S3_KEY`, `S3_SECRET`, `S3_BUCKET`, `S3_REGION` |
+| Azure Blob storage | `matthewbdaly/laravel-azure-storage` | When `MEDIA_LIBRARY_ENDPOINT_TYPE` or `FILE_LIBRARY_ENDPOINT_TYPE` is `azure` | Set `AZURE_ACCOUNT_NAME`, `AZURE_ACCOUNT_KEY`, and `AZURE_CONTAINER` |
+
+Example install commands:
+
+```bash
+composer require spatie/laravel-analytics
+composer require laravel/socialite
+composer require imgix/imgix-php
+composer require league/flysystem-aws-s3-v3
+composer require matthewbdaly/laravel-azure-storage
+```
+
 ## Global configuration
 
 By default, Twill uses Laravel default application namespace `App`. You can provide your own using the `namespace` configuration in your `config/twill.php` file:

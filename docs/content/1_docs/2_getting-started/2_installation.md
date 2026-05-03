@@ -21,7 +21,7 @@ The starter kit setup is a basic page builder. It comes with:
 You can install it in a Laravel application using:
 
 ```bash
-composer require area17/twill:"^3.4"
+composer require area17/twill:"^4.0"
 ```
 
 :::alert=type.warning::: 
@@ -33,14 +33,22 @@ Make sure to setup your .env file with your database credentials and to run it w
 php artisan twill:install basic-page-builder
 ```
 
-See [`examples/basic-page-builder`](https://github.com/area17/twill/tree/3.x/examples/basic-page-builder) for detailed instructions on setting up the starter kit.
+See [`examples/basic-page-builder`](https://github.com/area17/twill/tree/main/examples/basic-page-builder) for detailed instructions on setting up the starter kit.
+
+Additional presets are also available:
+
+```bash
+php artisan twill:install blog
+php artisan twill:install portfolio
+php artisan twill:install multilingual
+```
 
 ## Standard installation
 
 Twill package can be added to your application using Composer:
 
 ```bash
-composer require area17/twill:"^3.4"
+composer require area17/twill:"^4.0"
 ```
 
 :::alert=type.warning::: 
@@ -59,6 +67,8 @@ Twill's `install` command consists of:
 - publishing Twill's configuration file `twill.php` to your application's `config` directory.
 - publishing Twill's assets for the admin console UI in your `public` directory.
 - prompting you to create a superadmin user.
+- prompting for storage, image service, and optional integration choices when no preset is provided.
+- printing a ready-to-paste `.env` snippet and any follow-up `composer require` command for optional packages.
 
 ## Storage
 
@@ -168,6 +178,18 @@ IMGIX_SOURCE_HOST=source.imgix.net
 ```
 
 `IMGIX_USE_SIGNED_URLS`, and `IMGIX_SIGN_KEY` variables are also available.
+
+### Optional package installs
+
+Twill 4 keeps optional integrations out of the default dependency set. Install them only when needed:
+
+```bash
+composer require league/flysystem-aws-s3-v3   # S3 storage
+composer require matthewbdaly/laravel-azure-storage   # Azure Blob storage
+composer require imgix/imgix-php              # Imgix image rendering
+composer require laravel/socialite            # OAuth login
+composer require spatie/laravel-analytics     # Dashboard analytics
+```
 
 ## A note about the frontend
 

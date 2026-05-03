@@ -5,6 +5,7 @@ namespace A17\Twill\Commands;
 use A17\Twill\Commands\Traits\HandlesPresets;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Arr;
 
 class Install extends Command
 {
@@ -40,7 +41,7 @@ class Install extends Command
         try {
             $this->db->connection()->getPdo();
         } catch (\Exception $exception) {
-            $this->error('Could not connect to the database, please check your configuration:' . "\n" . $exception);
+            $this->components->error('Could not connect to the database, please check your configuration:' . "\n" . $exception);
 
             return;
         }
@@ -54,19 +55,21 @@ class Install extends Command
                 ) {
                     $this->installPreset($preset);
                 } else {
-                    $this->warn('Cancelled.');
+                    $this->components->warn('Cancelled.');
                 }
             } else {
-                $this->error("Could not find preset: $preset");
+                $this->components->error("Could not find preset: $preset");
             }
         } else {
+            $installSelections = $this->resolveInstallSelections();
+
             $this->copyBlockPreviewFile();
             $this->addRoutesFile();
             $this->call('migrate');
             $this->publishConfig();
             $this->publishAssets();
             $this->createSuperAdmin();
-            $this->info('All good!');
+            $this->displayInstallSummary($installSelections);
         }
     }
 
@@ -77,7 +80,8 @@ class Install extends Command
         $this->call('migrate');
         $this->publishAssets();
         $this->createSuperAdmin();
-        $this->info('Finished installing preset!');
+        $this->components->info('Finished installing preset!');
+        $this->displayPresetSummary($preset);
     }
 
     /**
@@ -147,5 +151,148 @@ class Install extends Command
                 '--tag' => 'assets',
             ]);
         }
+    }
+
+    private function resolveInstallSelections(): array
+    {
+        if ($this->option('no-interaction')) {
+            return [
+                'storage' => 'local',
+                'imageService' => 'glide',
+                'features' => [],
+            ];
+        }
+
+        $this->components->info('Twill 4 installation wizard');
+
+        return [
+            'storage' => $this->choice(
+                'Storage backend',
+                ['local', 's3', 'azure'],
+                'local'
+            ),
+            'imageService' => $this->choice(
+                'Image service',
+                ['glide', 'imgix', 'twicpics'],
+                'glide'
+            ),
+            'features' => $this->choice(
+                'Optional features',
+                ['2fa', 'oauth', 'permissions-management', 'dashboard-analytics'],
+                default: null,
+                attempts: null,
+                multiple: true
+            ),
+        ];
+    }
+
+    private function displayInstallSummary(array $installSelections): void
+    {
+        $envLines = $this->buildEnvSnippet($installSelections);
+        $composerPackages = $this->composerPackagesForSelections($installSelections);
+
+        $this->components->info('Twill installed successfully.');
+
+        $this->table(
+            ['Installed item', 'Selection'],
+            [
+                ['Storage backend', strtoupper($installSelections['storage'])],
+                ['Image service', ucfirst($installSelections['imageService'])],
+                ['Optional features', empty($installSelections['features']) ? 'None' : implode(', ', $installSelections['features'])],
+                ['Documentation', 'https://twillcms.com/docs'],
+            ]
+        );
+
+        $this->components->info('Ready-to-paste .env snippet:');
+        $this->line(implode(PHP_EOL, $envLines));
+
+        if (! empty($composerPackages)) {
+            $this->components->warn('Install the optional packages required by your selections:');
+            $this->line('composer require ' . implode(' ', $composerPackages));
+        }
+    }
+
+    private function displayPresetSummary(string $preset): void
+    {
+        $this->table(
+            ['Installed item', 'Selection'],
+            [
+                ['Preset', $preset],
+                ['Documentation', 'https://twillcms.com/docs'],
+            ]
+        );
+    }
+
+    private function buildEnvSnippet(array $installSelections): array
+    {
+        $lines = [
+            'MEDIA_LIBRARY_ENDPOINT_TYPE=' . $installSelections['storage'],
+            'FILE_LIBRARY_ENDPOINT_TYPE=' . $installSelections['storage'],
+        ];
+
+        if ($installSelections['storage'] === 's3') {
+            $lines = [
+                ...$lines,
+                'S3_KEY=',
+                'S3_SECRET=',
+                'S3_BUCKET=',
+                'S3_REGION=',
+            ];
+        }
+
+        if ($installSelections['storage'] === 'azure') {
+            $lines = [
+                ...$lines,
+                'AZURE_ACCOUNT_NAME=',
+                'AZURE_ACCOUNT_KEY=',
+                'AZURE_CONTAINER=public',
+            ];
+        }
+
+        $imageServiceMap = [
+            'glide' => 'A17\Twill\Services\MediaLibrary\Glide',
+            'imgix' => 'A17\Twill\Services\MediaLibrary\Imgix',
+            'twicpics' => 'A17\Twill\Services\MediaLibrary\TwicPics',
+        ];
+
+        $lines[] = 'MEDIA_LIBRARY_IMAGE_SERVICE="' . $imageServiceMap[$installSelections['imageService']] . '"';
+
+        if ($installSelections['imageService'] === 'imgix') {
+            $lines[] = 'IMGIX_SOURCE_HOST=';
+        }
+
+        if ($installSelections['imageService'] === 'twicpics') {
+            $lines[] = 'TWICPICS_DOMAIN=';
+            $lines[] = 'TWICPICS_PATH=';
+        }
+
+        return $lines;
+    }
+
+    private function composerPackagesForSelections(array $installSelections): array
+    {
+        $packages = [];
+
+        if ($installSelections['storage'] === 's3') {
+            $packages[] = 'league/flysystem-aws-s3-v3';
+        }
+
+        if ($installSelections['storage'] === 'azure') {
+            $packages[] = 'matthewbdaly/laravel-azure-storage';
+        }
+
+        if ($installSelections['imageService'] === 'imgix') {
+            $packages[] = 'imgix/imgix-php';
+        }
+
+        if (in_array('oauth', $installSelections['features'], true)) {
+            $packages[] = 'laravel/socialite';
+        }
+
+        if (in_array('dashboard-analytics', $installSelections['features'], true)) {
+            $packages[] = 'spatie/laravel-analytics';
+        }
+
+        return Arr::sort(array_values(array_unique($packages)));
     }
 }
