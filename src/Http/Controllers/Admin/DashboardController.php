@@ -17,6 +17,9 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\View\Factory as ViewFactory;
 use Psr\Log\LoggerInterface as Logger;
+use Spatie\Analytics\Analytics;
+use Spatie\Analytics\Exceptions\InvalidConfiguration;
+use Spatie\Analytics\Period;
 use Spatie\Activitylog\Models\Activity;
 class DashboardController extends Controller
 {
@@ -315,17 +318,17 @@ class DashboardController extends Controller
         $useV5API = true;
         if (class_exists('Spatie\Analytics\Facades\Analytics')) {
             /** @var Analytics $analytics */
-            $analytics = app()->makeWith(\Spatie\Analytics\Analytics::class, ['propertyId' => config('analytics.property_id')]);
+            $analytics = app()->makeWith(Analytics::class, ['propertyId' => config('analytics.property_id')]);
         } else {
             /** @var Analytics $analytics */
-            $analytics = app(\Spatie\Analytics\Analytics::class);
+            $analytics = app(Analytics::class);
             $useV5API = false;
         }
 
         try {
             if ($useV5API) {
                 $response = $analytics->get(
-                    \Spatie\Analytics\Period::days(60),
+                    Period::days(60),
                     ['totalUsers', 'screenPageViews', 'bounceRate', 'screenPageViewsPerSession'],
                     ['date']
                 );
@@ -341,7 +344,7 @@ class DashboardController extends Controller
                 })->reverse()->values();
             } else {
                 $response = $analytics->performQuery(
-                    \Spatie\Analytics\Period::days(60),
+                    Period::days(60),
                     'ga:users,ga:pageviews,ga:bouncerate,ga:pageviewsPerSession',
                     ['dimensions' => 'ga:date']
                 );
@@ -356,7 +359,7 @@ class DashboardController extends Controller
                     ];
                 });
             }
-        } catch (\Spatie\Analytics\Exceptions\InvalidConfiguration $exception) {
+        } catch (InvalidConfiguration $exception) {
             $this->logger->error($exception);
 
             return [];
@@ -510,7 +513,7 @@ class DashboardController extends Controller
     private function analyticsAvailable(): bool
     {
         return $this->config->get('twill.dashboard.analytics.enabled', false)
-            && class_exists(\Spatie\Analytics\Analytics::class);
+            && class_exists(Analytics::class);
     }
 
     /**
