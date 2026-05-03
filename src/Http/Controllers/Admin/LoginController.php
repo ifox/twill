@@ -201,7 +201,11 @@ class LoginController extends Controller
      */
     public function redirectToProvider($provider, OauthRequest $request)
     {
-        abort_unless(class_exists(Socialite::class), 500, 'Install laravel/socialite to use Twill OAuth login.');
+        abort_unless(
+            class_exists(Socialite::class),
+            500,
+            'Install laravel/socialite (`composer require laravel/socialite`) to use Twill OAuth login.'
+        );
 
         return Socialite::driver($provider)
             ->scopes($this->config->get('twill.oauth.' . $provider . '.scopes', []))
@@ -215,7 +219,11 @@ class LoginController extends Controller
      */
     public function handleProviderCallback($provider, OauthRequest $request)
     {
-        abort_unless(class_exists(Socialite::class), 500, 'Install laravel/socialite to use Twill OAuth login.');
+        abort_unless(
+            class_exists(Socialite::class),
+            500,
+            'Install laravel/socialite (`composer require laravel/socialite`) to use Twill OAuth login.'
+        );
 
         $oauthUser = Socialite::driver($provider)->user();
         $repository = App::make(UserRepository::class);

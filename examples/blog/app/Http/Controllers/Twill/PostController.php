@@ -49,7 +49,7 @@ class PostController extends BaseModuleController
                 ->options(
                     Category::published()
                         ->get()
-                        ->mapWithKeys(fn($cat) => [$cat->id => $cat->title])
+                        ->mapWithKeys(fn (Category $cat) => [$cat->id => $cat->title])
                         ->toArray()
                 ),
             DatePicker::make()

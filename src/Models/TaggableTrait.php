@@ -10,6 +10,11 @@ trait TaggableTrait
 {
     protected static string $tagsModel = Tag::class;
 
+    /**
+     * May be overridden on a model instance when a custom slug generator is needed.
+     *
+     * @var callable|string
+     */
     protected $slugGenerator = 'Illuminate\Support\Str::slug';
 
     public function allTags(): Builder
