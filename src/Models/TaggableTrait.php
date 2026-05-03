@@ -10,11 +10,11 @@ trait TaggableTrait
 {
     protected static string $tagsModel = Tag::class;
 
-    protected callable|string $slugGenerator = 'Illuminate\Support\Str::slug';
+    protected $slugGenerator = 'Illuminate\Support\Str::slug';
 
     public function allTags(): Builder
     {
-        return static::$tagsModel::query()->where('namespace', $this->getTagNamespace());
+        return $this->getTagsModel()::query()->where('namespace', $this->getTagNamespace());
     }
 
     public function setTags(array|string $tags): void
@@ -65,6 +65,11 @@ trait TaggableTrait
         return $this->getMorphClass();
     }
 
+    protected function getTagsModel(): string
+    {
+        return static::$tagsModel;
+    }
+
     /**
      * @return \Illuminate\Support\Collection<int, Tag>
      */
@@ -78,7 +83,7 @@ trait TaggableTrait
                     return null;
                 }
 
-                $query = static::$tagsModel::query()->where([
+                $query = $this->getTagsModel()::query()->where([
                     'namespace' => $this->getTagNamespace(),
                     'slug' => $slug,
                 ]);

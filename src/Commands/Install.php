@@ -5,7 +5,6 @@ namespace A17\Twill\Commands;
 use A17\Twill\Commands\Traits\HandlesPresets;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Arr;
 
 class Install extends Command
 {
@@ -293,6 +292,6 @@ class Install extends Command
             $packages[] = 'spatie/laravel-analytics';
         }
 
-        return Arr::sort(array_values(array_unique($packages)));
+        return collect($packages)->unique()->sort()->values()->all();
     }
 }

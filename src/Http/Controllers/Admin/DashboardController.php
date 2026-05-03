@@ -476,9 +476,7 @@ class DashboardController extends Controller
                     return $stat['pageViews'];
                 }),
             ];
-        }
-
-        if ($period === 'month') {
+        } elseif ($period === 'month') {
             $first30stats = $statsByDate->take(30)->all();
 
             $stats = [
@@ -504,9 +502,9 @@ class DashboardController extends Controller
                     return $stat['pageViews'];
                 }),
             ];
+        } else {
+            return [];
         }
-
-        return [];
     }
 
     private function analyticsAvailable(): bool
