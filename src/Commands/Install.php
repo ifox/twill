@@ -40,7 +40,9 @@ class Install extends Command
         try {
             $this->db->connection()->getPdo();
         } catch (\Exception $exception) {
-            $this->components->error('Could not connect to the database, please check your configuration:' . "\n" . $exception);
+            $this->components->error(
+                'Could not connect to the database, please check your configuration:' . "\n" . $exception->getMessage()
+            );
 
             return;
         }

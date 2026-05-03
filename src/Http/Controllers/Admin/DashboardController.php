@@ -17,10 +17,10 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\View\Factory as ViewFactory;
 use Psr\Log\LoggerInterface as Logger;
+use Spatie\Activitylog\Models\Activity;
 use Spatie\Analytics\Analytics;
 use Spatie\Analytics\Exceptions\InvalidConfiguration;
 use Spatie\Analytics\Period;
-use Spatie\Activitylog\Models\Activity;
 class DashboardController extends Controller
 {
     /**
