@@ -272,9 +272,6 @@ if (! function_exists('generate_list_of_available_blocks')) {
 }
 
 if (! function_exists('capsule_namespace')) {
-    /**
-     * @deprecated use TwillCapsules::capsuleNamespace instead
-     */
     function capsule_namespace($capsuleName, $type = null)
     {
         return TwillCapsules::capsuleNamespace($capsuleName, $type);
@@ -282,9 +279,6 @@ if (! function_exists('capsule_namespace')) {
 }
 
 if (! function_exists('capsule_namespace_to_path')) {
-    /**
-     * @deprecated use TwillCapsules::capsuleNamespaceToPath instead
-     */
     function capsule_namespace_to_path($namespace, $capsuleNamespace, $rootPath)
     {
         return TwillCapsules::capsuleNamespaceToPath($namespace, $capsuleNamespace, $rootPath);

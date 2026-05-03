@@ -195,8 +195,6 @@ abstract class ModuleController extends Controller
      * from your repository in the filter() function.
      *
      * @var array
-     *
-     * @deprecated use the method `filters` instead.
      */
     protected $filters = [];
 
@@ -211,8 +209,6 @@ abstract class ModuleController extends Controller
      * Default orders for the index view for fields that are not part of the indexColumns.
      *
      * @var array
-     *
-     * @deprecated when possible use getIndexTableColumns instead.
      */
     protected $defaultOrders = [
         'created_at' => 'desc',
@@ -291,13 +287,11 @@ abstract class ModuleController extends Controller
 
     /**
      * @var array
-     * @deprecated please use the getIndexTableColumns method. Will be removed in Twill 4.0
      */
     protected $indexColumns = [];
 
     /**
      * @var array
-     * @deprecated please use the getBrowserTableColumns method. Will be removed in Twill 4.0
      */
     protected $browserColumns = [];
 
@@ -312,17 +306,12 @@ abstract class ModuleController extends Controller
      * Example: 'filter_key' => 'default_filter_value'
      *
      * @var array
-     *
-     * @deprecated use the method `default` in `filters` instead.
      */
     protected $filtersDefaultOptions = [];
 
     /**
      * @var array
-     *
      * Can be something like ['search' => 'title|search']
-     *
-     * @deprecated use the method `default` in `filters` instead.
      */
     protected $defaultFilters;
 
@@ -988,34 +977,6 @@ abstract class ModuleController extends Controller
         $gate = $this->authorizableOptions[$option] ?? $option;
 
         $this->authorize($gate, $arguments);
-    }
-
-    /**
-     * @return void
-     * @deprecated To be removed in Twill 3.0
-     * @todo: Check this.
-     */
-    protected function setMiddlewarePermission()
-    {
-        $this->middleware('can:list', ['only' => ['index', 'show']]);
-        $this->middleware('can:edit', ['only' => ['store', 'edit', 'update']]);
-        $this->middleware('can:duplicate', ['only' => ['duplicate']]);
-        $this->middleware('can:publish', ['only' => ['publish', 'feature', 'bulkPublish', 'bulkFeature']]);
-        $this->middleware('can:reorder', ['only' => ['reorder']]);
-        $this->middleware(
-            'can:delete',
-            [
-                'only' => [
-                    'destroy',
-                    'bulkDelete',
-                    'restore',
-                    'bulkRestore',
-                    'forceDelete',
-                    'bulkForceDelete',
-                    'restoreRevision',
-                ],
-            ]
-        );
     }
 
     /**

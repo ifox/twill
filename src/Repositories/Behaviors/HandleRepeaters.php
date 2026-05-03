@@ -64,31 +64,6 @@ trait HandleRepeaters
         return $fields;
     }
 
-    /**
-     * @deprecated use updateRepeaterWithPivot
-     */
-    public function updateRepeaterMany(
-        TwillModelContract $object,
-        array $fields,
-        string $relation,
-        bool $keepExisting = true,
-        ?string $model = null
-    ): void {
-        $relationFields = $fields['repeaters'][$relation] ?? [];
-        $relationRepository = getModelRepository($relation, $model);
-
-        if (! $keepExisting) {
-            $object->$relation()->each(function ($repeaterElement) {
-                $repeaterElement->forceDelete();
-            });
-        }
-
-        foreach ($relationFields as $relationField) {
-            $newRelation = $relationRepository->create($relationField);
-            $object->$relation()->attach($newRelation->id);
-        }
-    }
-
     public function updateRepeaterMorphMany(
         TwillModelContract $object,
         array $fields,

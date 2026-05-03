@@ -59,11 +59,6 @@ if (! function_exists('bytesToHuman')) {
 }
 
 if (! function_exists('replaceAccents')) {
-    /**
-     * @param string $str
-     * @return bool|string
-     * @deprecated Use Str::ascii instead
-     */
     function replaceAccents($str)
     {
         return Str::ascii($str);

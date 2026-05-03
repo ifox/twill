@@ -782,14 +782,6 @@ abstract class ModuleRepository
         });
     }
 
-    /**
-     * @deprecated use the helper getLikeOperator directly.
-     */
-    protected function getLikeOperator(): string
-    {
-        return getLikeOperator();
-    }
-
     public function __call(string $method, array $parameters): mixed
     {
         return $this->model->$method(...$parameters);

@@ -2,11 +2,8 @@
 
 namespace A17\Twill\Http\Controllers\Front;
 
-use A17\Twill\Exceptions\Handler as TwillHandler;
 use A17\Twill\Http\Controllers\Front\Helpers\Seo;
-use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Routing\Controller as BaseController;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\View;
 
