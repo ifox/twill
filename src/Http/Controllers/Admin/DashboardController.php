@@ -502,9 +502,9 @@ class DashboardController extends Controller
                     return $stat['pageViews'];
                 }),
             ];
-        } else {
-            return [];
         }
+
+        return [];
     }
 
     private function analyticsAvailable(): bool
